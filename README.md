@@ -15,6 +15,22 @@ On the real Apollo 11 flight, spurious cycle steals from the Rendezvous Radar (l
 
 This simulation/patch applies a throttle/mask on the cycle-steal path (BIT5/PRIORITY) so that radar interface activity cannot monopolize core sets / VAC areas during the critical P63/P64 descent path.
 
+## Implementation Status
+
+**Core loop skeleton is now available** under [`sim/`](sim/):
+
+- Pure C11 instruction-cycle emulator
+- Explicit cycle-steal request API
+- Token-bucket + priority-mask throttle (BIT5 style)
+- Demo that recreates a radar-burst descent segment and shows the throttle preventing 1201/1202 alarms
+
+```bash
+cd sim
+make run
+```
+
+See [`sim/README.md`](sim/README.md) for build instructions and architecture details.
+
 ## Telemetry & Descent Log
 
 * PRO executed. Program 63 initialized. Descent Orbit Insertion burn verified.
@@ -51,10 +67,11 @@ This simulation/patch applies a throttle/mask on the cycle-steal path (BIT5/PRIO
 
 ## Future Work / Possible Further Improvements
 
-- Formal verification of the throttle mask under worst-case radar interrupt rates.
-- Integration tests with full Luminary 116 image + simulated RR interface jitter.
-- Documentation of exact bit definitions and Executive modifications.
-- Comparison runs with and without the throttle under identical radar load profiles.
+- Expand the instruction set and model real core-set / VAC allocation
+- Formal verification of the throttle mask under worst-case radar interrupt rates
+- Landing Radar vs Rendezvous Radar priority differentiation
+- Python/FastAPI real-time telemetry front-end (SSE)
+- Integration tests with full Luminary 116 image + simulated RR interface jitter
 
 ---
 
